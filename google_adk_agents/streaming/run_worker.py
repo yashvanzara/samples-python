@@ -1,0 +1,32 @@
+from __future__ import annotations
+
+import asyncio
+import os
+
+from temporalio.client import Client
+from temporalio.contrib.google_adk_agents import GoogleAdkPlugin
+from temporalio.worker import Worker
+
+from google_adk_agents.streaming.workflows.streaming_workflow import (
+    StreamingAgentWorkflow,
+)
+
+
+async def main():
+    plugin = GoogleAdkPlugin()
+
+    client = await Client.connect(
+        os.environ.get("TEMPORAL_ADDRESS", "localhost:7233"), plugins=[plugin]
+    )
+
+    worker = Worker(
+        client,
+        task_queue="google-adk-agents-streaming",
+        workflows=[StreamingAgentWorkflow],
+        plugins=[plugin],
+    )
+    await worker.run()
+
+
+if __name__ == "__main__":
+    asyncio.run(main())

@@ -44,8 +44,9 @@ async def env(request) -> AsyncGenerator[WorkflowEnvironment, None]:
         env = await WorkflowEnvironment.start_local(
             dev_server_extra_args=[
                 "--dynamic-config-value",
-                "frontend.enableExecuteMultiOperation=true",
-            ]
+                "activity.enableCallbacks=true",
+            ],
+            dev_server_download_version="v1.7.4-standalone-nexus-operations",
         )
     elif env_type == "time-skipping":
         env = await WorkflowEnvironment.start_time_skipping()
